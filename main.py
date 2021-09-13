@@ -9,11 +9,11 @@ class Db:
         self.con = sqlite3.connect(db)
         self.con.row_factory = sqlite3.Row
 
-    def enter(self):
+    def __enter__(self):
         """make a database connection"""
         return self
 
-    def exit(self, exc_type, exc_val, exc_tb):
+    def __exit__(self, exc_type, exc_val, exc_tb):
         """make sure the dbconnection gets closed"""
         self.con.close()
 

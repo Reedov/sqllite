@@ -1,5 +1,5 @@
 import sqlite3
-from typing import Optional, Sequence
+from typing import Optional, Sequence, Generator
 
 
 class Db:
@@ -57,22 +57,34 @@ class Db:
         query_result = cur.fetchone()
         return tuple(query_result) if query_result else ()
 
-    def fetchmany(self, query, size=None, **kwargs):
-        """fetch next set """
+    def fetchmany(self, query, size=None, **kwargs) -> Generator:
+        """ fetch next set as tuple
+            Args:
+                query: запрос
+                size: размер выборки за раз
+            Returns:
+                список кортежей данных
+        """
         self.generator_cursor.execute(query, kwargs)
         while True:
-            results = self.generator_cursor.fetchmany(size)
+            results = self.generator_cursor.fetchmany(size=self.generator_cursor.arraysize)
             if not results:
                 print('no results returned/end')
                 break
             yield [tuple(x) for x in results]
 
-    def fetchmany_as_dict(self, query, size=None, **kwargs):
+    def fetchmany_as_dict(self, query, size=None, **kwargs) -> Generator:
+        """ fetch next set as dict
+            Args:
+                query: запрос
+                size: размер выборки за раз
+            Returns:
+                список словарей данных
+        """
         self.generator_cursor.execute(query, kwargs)
         while True:
-            results = self.generator_cursor.fetchmany(size)
+            results = self.generator_cursor.fetchmany(size=self.generator_cursor.arraysize)
             if not results:
-                print('no results returned/end')
                 break
             yield [dict(x) for x in results]
 

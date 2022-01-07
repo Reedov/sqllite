@@ -14,6 +14,7 @@ WHERE
 
 
 with Db(file) as conn:
-    s = conn.fetchmany_as_dict(sql, size=4)
-    for i in s:
+    select = conn.fetchmany_as_dict(sql)
+    print(type(select))
+    for i in select:
         print(i)
